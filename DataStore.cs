@@ -167,6 +167,26 @@ public class DataStore
 		var victimUser = victim.UserEntity.Read<User>();
 		var killerUser = killer.UserEntity.Read<User>();
 
+		var victimLevel = 0.0;
+		var killerLevel = 0.0;
+
+		var victimCharacter = victimUser.LocalCharacter._Entity;
+		var killerCharacter = killerUser.LocalCharacter._Entity;
+
+		if (victimCharacter.Has<Equipment>())
+		{
+			var victimEquipment = victimCharacter.Read<Equipment>();
+			victimLevel = victimEquipment.GetFullLevel();
+		}
+
+		if (killerCharacter.Has<Equipment>())
+		{
+			var killerEquipment = killerCharacter.Read<Equipment>();
+			killerLevel = killerEquipment.GetFullLevel();
+		}
+		
+		ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, $"killerLevel:{killerLevel}, vic:{victimLevel}");
+
 		var newEvent = new EventData(victimUser.PlatformId, killerUser.PlatformId, location, DateTime.UtcNow.Ticks);
 
 		Events.Add(newEvent);
@@ -201,7 +221,7 @@ public class DataStore
 		// while this is naieve and whole file, in append or WAL this might be better
 		WriteToDisk();
 	}
-	
+
 	private static void AnnounceKill(PlayerStatistics victimUser, PlayerStatistics killerUser, int lostStreakAmount)
 	{
 		if (!Settings.AnnounceKills) return;
@@ -225,7 +245,7 @@ public class DataStore
 		};
 
 		ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, Markup.Prefix + message);
-		
+
 		if (!string.IsNullOrEmpty(killMsg) && Settings.AnnounceKillstreak)
 		{
 			ServerChatUtils.SendSystemMessageToAllClients(VWorld.Server.EntityManager, Markup.Prefix + killMsg);
