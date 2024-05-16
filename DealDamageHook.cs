@@ -19,15 +19,14 @@ public static class DealDamageHook
     public static void Prefix(CreateGameplayEventsOnDamageTakenSystem __instance)
     {
         NativeArray<Entity> entities = __instance.__query_1365518740_0.ToEntityArray(Allocator.Temp);
-        // ProjectM.Gameplay.Systems.CreateGameplayEventsOnDamageTakenSystem._DamageTakenEventQuery
         foreach (var entity in entities)
         {
             if (entity.Has<DamageTakenEvent>())
             {
-                DamageTakenEvent damageEvent = entity.Read<DamageTakenEvent>();
-                if (damageEvent.Entity.Has<PlayerCharacter>())
+                DamageTakenEvent damageTakenEvent = entity.Read<DamageTakenEvent>();
+                if (damageTakenEvent.Entity.Has<PlayerCharacter>())
                 {
-                    PlayerCharacter damageTakenPlayerCharacter = damageEvent.Entity.Read<PlayerCharacter>();
+                    PlayerCharacter damageTakenPlayerCharacter = damageTakenEvent.Entity.Read<PlayerCharacter>();
                     P($"{damageTakenPlayerCharacter.Name} has take damage from: ???");
 
                 }
