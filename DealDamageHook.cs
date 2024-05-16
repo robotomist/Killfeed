@@ -2,7 +2,7 @@ using Backtrace.Unity.Extensions;
 using Bloodstone.API;
 using HarmonyLib;
 using ProjectM;
-using ProjectM.Behaviours;
+using ProjectM.Network;
 using ProjectM.Gameplay.Systems;
 using Unity.Collections;
 using Unity.Entities;
@@ -23,22 +23,26 @@ public static class DealDamageHook
         {
             if (entity.Has<DamageTakenEvent>())
             {
-                DamageTakenEvent damageTakenEvent = entity.Read<DamageTakenEvent>();
-                if (damageTakenEvent.Entity.Has<PlayerCharacter>())
-                {
-                    PlayerCharacter damageTakenPlayerCharacter = damageTakenEvent.Entity.Read<PlayerCharacter>();
-                    P($"{damageTakenPlayerCharacter.Name} has take damage from: ???");
-
-                }
-                else
-                {
-                    P("A non player was hit");
-                }
+                HandleDamageTakenEvent(entity);
             }
             else
             {
                 P("Nope");
             }
+        }
+    }
+    private static void HandleDamageTakenEvent(Entity entity)
+    {
+        DamageTakenEvent damageTakenEvent = entity.Read<DamageTakenEvent>();
+        if (damageTakenEvent.Entity.Has<PlayerCharacter>())
+        {
+            PlayerCharacter damageTakenPlayerCharacter = damageTakenEvent.Entity.Read<PlayerCharacter>();
+            P($"{damageTakenPlayerCharacter.Name} has take damage from: ???");
+
+        }
+        else
+        {
+            P("A non player was hit");
         }
     }
 }
